@@ -1,0 +1,25 @@
+  
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"moduleResolution": "node",
+		"strict": true,
+		"jsx": "react",
+		"esModuleInterop": true,
+		"noImplicitAny": false,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"target": "es2015",
+		"lib": ["es2017", "dom"],
+		"baseUrl": ".",
+		"paths": {
+			"*": ["types/*"]
+		}
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules/*"
+	]
+}

@@ -1,0 +1,29 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: #0E0F24;
+    box-shadow: inset 0 0 120px #190F4B;
+    font-family: 'Fredoka One', cursive;
+}
+
+#plane {
+    border: 2px solid #190F4B;
+}
+
+.ScoreBoard {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+
+    span {
+        display: block;
+        margin-bottom: 10px;
+        color: #EC1395;
+        text-shadow: #70D0FF 2px 2px 0;
+        font-size: 36px;
+    }
+}
