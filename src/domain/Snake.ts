@@ -12,12 +12,12 @@ export class Snake {
 
 		this.coordinates = [
 			{
-				x: 0,
-				y: 0
+				x: Math.floor(plane.gridSize.width / 2),
+				y: Math.floor(plane.gridSize.height / 2)
 			},
 			{
-				x: 1,
-				y: 0
+				x: Math.floor(plane.gridSize.width / 2) + 1,
+				y: Math.floor(plane.gridSize.height / 2)
 			}
 		];
 	}
