@@ -12,6 +12,22 @@ body {
 
 #plane {
     border: 2px solid #190F4B;
+
+    .SnakePart {
+        fill: #EC1395;
+    }
+
+    .FoodCherry {
+        fill: #fc033d;
+    }
+
+    .FoodMushroom {
+        fill: #c7bfa7;
+    }
+
+    .FoodPizza {
+        fill: #fff09e;
+    }
 }
 
 .ScoreBoard {

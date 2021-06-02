@@ -31,13 +31,13 @@ export class Snake {
 
 	public draw(plane: Plane): void {
 
-		plane.grid.selectAll('rect').remove();
+		plane.grid.selectAll('rect.SnakePart').remove();
             
-        plane.grid.selectAll('rect')
+        plane.grid.selectAll('rect.SnakePart')
             .data(this.coordinates)
             .enter()
             .append('rect')
-            .attr('fill', '#EC1395')
+			.attr('class', 'SnakePart')
             .attr('width', plane.CELL_SIZE)
             .attr('height', plane.CELL_SIZE)
             .attr('x', (point) => { return point.x * plane.CELL_SIZE })
