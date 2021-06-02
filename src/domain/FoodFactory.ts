@@ -9,7 +9,7 @@ export class FoodFactory {
     create(coordinate: ICoordinate) {
 
         const randomizedNumber: number = Helpers.generateRandomNumber(1, 3)
-        console.log(randomizedNumber);
+
         switch(randomizedNumber) {
             case 1:
                 return new Cherry(coordinate);
@@ -17,8 +17,8 @@ export class FoodFactory {
                 return new Mushroom(coordinate);
             case 3:
                 return new Pizza(coordinate);
+            default:
+                return new Cherry(coordinate);
         }
-
-        return new Cherry(coordinate);
     }
 }

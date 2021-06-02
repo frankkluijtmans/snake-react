@@ -4,7 +4,7 @@ import { Food } from "./Food";
 
 export class Mushroom extends Food {
 
-	public value: number = 250;
+	public value: number = 350;
 	public type: FoodType = FoodType.MUSHROOM;
 
 	constructor(coordinate: ICoordinate) {

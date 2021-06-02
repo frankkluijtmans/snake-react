@@ -45,6 +45,11 @@ export class Snake {
             .exit();
 	}
 
+	public incrementSize(): void {
+
+		this.coordinates.unshift(this.coordinates[0]);
+	}
+
 	public bindInput(input: Input): void {
 
 		input.subscribe({

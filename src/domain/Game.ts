@@ -30,12 +30,28 @@ export class Game {
         this.gameLoop = setInterval(() => {
             this.snake.update();
 
+            // Check if any food is eaten
+            this.food.forEach((food: Food, index) => {
+
+                if(this.checkCollision(
+                    this.snake.coordinates[this.snake.coordinates.length - 1],
+                    [food.coordinate]
+                )) {
+                    food.eat(this.plane);
+                    this.food.splice(index, 1);
+                    this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
+                    this.food[this.food.length - 1].draw(this.plane);
+                    this.snake.incrementSize();
+                }
+            })
+
             // Check for collision on snake itself
             if(this.checkCollision(
                 this.snake.coordinates[this.snake.coordinates.length - 1],
                 this.snake.coordinates.slice(0, this.snake.coordinates.length - 1)
             )) {
                 clearInterval(this.gameLoop);
+                // Dispatch action to change gamestate
                 return;
             }
 
@@ -44,6 +60,7 @@ export class Game {
                 this.snake.coordinates[this.snake.coordinates.length - 1]
             )) {
                 clearInterval(this.gameLoop);
+                // Dispatch action to change gamestate
                 return;
             }
 
@@ -65,8 +82,6 @@ export class Game {
         this.food = new Array(5).fill(0).map(() => {
             return this.foodFactory.create(this.getAvailableCoordinate())
         });
-
-        console.log(this.food);
 
         // Draw every piece of food on the plane
         this.food.forEach((food: Food) => {
