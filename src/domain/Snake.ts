@@ -7,17 +7,25 @@ export class Snake {
 
 	public coordinates: ICoordinate[] = [];
 	private direction: Direction = Direction.RIGHT;
+	private plane: Plane;
+	private input: Input;
 
-	public init(plane: Plane): void {
+	constructor(plane: Plane, input: Input) {
+		this.plane = plane;
+		this.input = input;
+		this.bindInput();
+	}
+
+	public init(): void {
 
 		this.coordinates = [
 			{
-				x: Math.floor(plane.gridSize.width / 2),
-				y: Math.floor(plane.gridSize.height / 2)
+				x: Math.floor(this.plane.gridSize.width / 2),
+				y: Math.floor(this.plane.gridSize.height / 2)
 			},
 			{
-				x: Math.floor(plane.gridSize.width / 2) + 1,
-				y: Math.floor(plane.gridSize.height / 2)
+				x: Math.floor(this.plane.gridSize.width / 2) + 1,
+				y: Math.floor(this.plane.gridSize.height / 2)
 			}
 		];
 	}
@@ -29,30 +37,30 @@ export class Snake {
 		this.coordinates.push(this.getNewPosition(currentHead));
 	}
 
-	public draw(plane: Plane): void {
+	public draw(): void {
 
-		plane.grid.selectAll('rect.SnakePart').remove();
+		this.plane.grid.selectAll('rect.SnakePart').remove();
             
-        plane.grid.selectAll('rect.SnakePart')
+        this.plane.grid.selectAll('rect.SnakePart')
             .data(this.coordinates)
             .enter()
             .append('rect')
 			.attr('class', 'SnakePart')
-            .attr('width', plane.CELL_SIZE)
-            .attr('height', plane.CELL_SIZE)
-            .attr('x', (point) => { return point.x * plane.CELL_SIZE })
-            .attr('y', (point) => { return point.y * plane.CELL_SIZE })
+            .attr('width', this.plane.CELL_SIZE)
+            .attr('height', this.plane.CELL_SIZE)
+            .attr('x', (point) => { return point.x * this.plane.CELL_SIZE })
+            .attr('y', (point) => { return point.y * this.plane.CELL_SIZE })
             .exit();
 	}
 
-	public incrementSize(): void {
+	public grow(): void {
 
 		this.coordinates.unshift(this.coordinates[0]);
 	}
 
-	public bindInput(input: Input): void {
+	private bindInput(): void {
 
-		input.subscribe({
+		this.input.subscribe({
 			keyCodes: ['KeyW', 'ArrowUp'],
 			callback: () => {
 				if(this.direction === Direction.DOWN) return;
@@ -60,7 +68,7 @@ export class Snake {
 			}
 		});
 
-		input.subscribe({
+		this.input.subscribe({
 			keyCodes: ['KeyS', 'ArrowDown'],
 			callback: () => {
 				if(this.direction === Direction.UP) return;
@@ -68,7 +76,7 @@ export class Snake {
 			}
 		});
 
-		input.subscribe({
+		this.input.subscribe({
 			keyCodes: ['KeyA', 'ArrowLeft'],
 			callback: () => {
 				if(this.direction === Direction.RIGHT) return;
@@ -76,7 +84,7 @@ export class Snake {
 			}
 		});
 
-		input.subscribe({
+		this.input.subscribe({
 			keyCodes: ['KeyD', 'ArrowRight'],
 			callback: () => {
 				if(this.direction === Direction.LEFT) return;

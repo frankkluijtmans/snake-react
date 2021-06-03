@@ -9,19 +9,22 @@ import { Helpers } from "./Helpers";
 export class Game {
     
     readonly FRAME_RATE: number = 10;
-    private plane: Plane = new Plane();
-    private snake: Snake = new Snake();
-    private input: Input = new Input();
+    private plane: Plane;
+    private snake: Snake;
+    private input: Input;
     private food: Food[] = [];
     private foodFactory: FoodFactory = new FoodFactory();
     private gameLoop: any;
 
+    constructor() {
+        this.plane = new Plane();
+        this.input = new Input();
+        this.snake = new Snake(this.plane, this.input);
+    }
+
     public setup(): void {
 
         this.reset();
-        this.snake.bindInput(
-            this.input
-        );
         this.tick();
     }
 
@@ -41,7 +44,7 @@ export class Game {
                     this.food.splice(index, 1);
                     this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
                     this.food[this.food.length - 1].draw(this.plane);
-                    this.snake.incrementSize();
+                    this.snake.grow();
                 }
             })
 
@@ -64,7 +67,7 @@ export class Game {
                 return;
             }
 
-            this.snake.draw(this.plane);
+            this.snake.draw();
         }, 1000 / this.FRAME_RATE);
     }
 
@@ -74,9 +77,7 @@ export class Game {
         this.plane.init();
 
         // Initialize snake
-        this.snake.init(
-            this.plane
-        );
+        this.snake.init();
 
         // Generate n pieces of food
         this.food = new Array(5).fill(0).map(() => {
