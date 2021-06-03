@@ -5,10 +5,14 @@ import { Plane } from "./Plane";
 import { Snake } from "./Snake";
 import { Input } from "./Input";
 import { Helpers } from "./Helpers";
+import { store } from "../store/store";
+import { FoodType } from "../enums/FoodType";
+import { resetScore } from "../store/slices/GameState";
+import { resetSideEffects } from "../store/slices/SideEffects";
 
 export class Game {
     
-    readonly FRAME_RATE: number = 10;
+    readonly FRAME_RATE: number = 6;
     private plane: Plane;
     private snake: Snake;
     private input: Input;
@@ -22,9 +26,15 @@ export class Game {
         this.snake = new Snake(this.plane, this.input);
     }
 
+    get speedMultiplier(): number {
+
+        return store.getState().sideEffects.speedMultiplier;
+    }
+
     public setup(): void {
 
-        this.reset();
+        this.resetObjects();
+        this.resetState();
         this.tick();
     }
 
@@ -34,44 +44,19 @@ export class Game {
             this.snake.update();
 
             // Check if any food is eaten
-            this.food.forEach((food: Food, index) => {
-
-                if(this.checkCollision(
-                    this.snake.coordinates[this.snake.coordinates.length - 1],
-                    [food.coordinate]
-                )) {
-                    food.eat(this.plane);
-                    this.food.splice(index, 1);
-                    this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
-                    this.food[this.food.length - 1].draw(this.plane);
-                    this.snake.grow();
-                }
-            })
+            this.checkFoodCollisions();
 
             // Check for collision on snake itself
-            if(this.checkCollision(
-                this.snake.coordinates[this.snake.coordinates.length - 1],
-                this.snake.coordinates.slice(0, this.snake.coordinates.length - 1)
-            )) {
-                clearInterval(this.gameLoop);
-                // Dispatch action to change gamestate
-                return;
-            }
+            if(this.checkSnakeCollisions()) return;
 
             // Check for collision on bounds
-            if(this.checkBounds(
-                this.snake.coordinates[this.snake.coordinates.length - 1]
-            )) {
-                clearInterval(this.gameLoop);
-                // Dispatch action to change gamestate
-                return;
-            }
+            if(this.checkBoundCollisions()) return;
 
             this.snake.draw();
-        }, 1000 / this.FRAME_RATE);
+        }, 1000 / Math.round(this.FRAME_RATE * this.speedMultiplier));
     }
 
-    private reset(): void {
+    private resetObjects(): void {
         
         // Initialize plane
         this.plane.init();
@@ -88,6 +73,18 @@ export class Game {
         this.food.forEach((food: Food) => {
             food.draw(this.plane);
         });
+    }
+
+    private resetState(): void {
+        
+        store.dispatch(resetScore());
+        store.dispatch(resetSideEffects());
+    }
+
+    private resetLoop(): void {
+
+        clearInterval(this.gameLoop);
+        this.tick();
     }
 
     private checkCollision(baseCoordinate: ICoordinate, coordinatesToCheck: ICoordinate[]): boolean {
@@ -125,5 +122,50 @@ export class Game {
         }
 
         return generatedCoordinate;
+    }
+
+    private checkFoodCollisions(): void {
+
+        this.food.forEach((food: Food, index) => {
+
+            if(this.checkCollision(
+                this.snake.coordinates[this.snake.coordinates.length - 1],
+                [food.coordinate]
+            )) {
+                food.eat(this.plane);
+                if(food.type === FoodType.PIZZA) this.resetLoop();
+                this.food.splice(index, 1);
+                this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
+                this.food[this.food.length - 1].draw(this.plane);
+                this.snake.grow();
+            }
+        })
+    }
+
+    private checkSnakeCollisions(): boolean {
+
+        if(this.checkCollision(
+            this.snake.coordinates[this.snake.coordinates.length - 1],
+            this.snake.coordinates.slice(0, this.snake.coordinates.length - 1)
+        )) {
+            clearInterval(this.gameLoop);
+            // Dispatch action to change gamestate
+            return true;
+        }
+
+        return false;
+    }
+
+    private checkBoundCollisions(): boolean {
+
+        if(this.checkBounds(
+            this.snake.coordinates[this.snake.coordinates.length - 1]
+        )) {
+            clearInterval(this.gameLoop);
+            // Dispatch action to change gamestate
+            return true;
+        }
+
+        return false;
     }
 }

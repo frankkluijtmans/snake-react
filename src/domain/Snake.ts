@@ -2,6 +2,7 @@ import { Direction } from "../enums/Direction";
 import { ICoordinate } from "../interfaces/coordinate.interface";
 import { Plane } from "./Plane";
 import { Input } from "./Input";
+import { store } from "../store/store";
 
 export class Snake {
 
@@ -14,6 +15,11 @@ export class Snake {
 		this.plane = plane;
 		this.input = input;
 		this.bindInput();
+	}
+
+	get invertedControls(): boolean {
+
+		return store.getState().sideEffects.invertedControls;
 	}
 
 	public init(): void {
@@ -63,34 +69,40 @@ export class Snake {
 		this.input.subscribe({
 			keyCodes: ['KeyW', 'ArrowUp'],
 			callback: () => {
-				if(this.direction === Direction.DOWN) return;
-				this.direction = Direction.UP
+				this.changeDirection(Direction.UP, Direction.DOWN);
 			}
 		});
 
 		this.input.subscribe({
 			keyCodes: ['KeyS', 'ArrowDown'],
 			callback: () => {
-				if(this.direction === Direction.UP) return;
-				this.direction = Direction.DOWN
+				this.changeDirection(Direction.DOWN, Direction.UP);
 			}
 		});
 
 		this.input.subscribe({
 			keyCodes: ['KeyA', 'ArrowLeft'],
 			callback: () => {
-				if(this.direction === Direction.RIGHT) return;
-				this.direction = Direction.LEFT
+				this.changeDirection(Direction.LEFT, Direction.RIGHT);
 			}
 		});
 
 		this.input.subscribe({
 			keyCodes: ['KeyD', 'ArrowRight'],
 			callback: () => {
-				if(this.direction === Direction.LEFT) return;
-				this.direction = Direction.RIGHT
+				this.changeDirection(Direction.RIGHT, Direction.LEFT);
 			}
 		});
+	}
+
+	private changeDirection(direction: Direction, oppositeDirection: Direction): void {
+
+		if(this.direction === oppositeDirection
+			|| this.invertedControls && this.direction === direction) {
+			return
+		};
+		
+		this.invertedControls ? this.direction = oppositeDirection : this.direction = direction;
 	}
 
 	private getNewPosition(currentHead: ICoordinate): ICoordinate {

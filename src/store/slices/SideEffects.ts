@@ -15,10 +15,13 @@ export const sideEffectSlice = createSlice({
 	initialState,
 	reducers: {
 		invertControls: state => {
-			state.invertedControls = state.invertedControls ? false : true;
+			state.invertedControls = true;
+		},
+		revertControls: state => {
+			state.invertedControls = false;
 		},
 		increaseSpeed: state => {
-			state.speedMultiplier += 0.1;
+			state.speedMultiplier = parseFloat((state.speedMultiplier + 0.1).toFixed(1));
 		},
 		resetSideEffects: state => {
 			state.speedMultiplier = 1;
@@ -27,5 +30,5 @@ export const sideEffectSlice = createSlice({
 	}
 });
 
-export const { invertControls, increaseSpeed, resetSideEffects } = sideEffectSlice.actions;
+export const { invertControls, revertControls, increaseSpeed, resetSideEffects } = sideEffectSlice.actions;
 export default sideEffectSlice.reducer;

@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GameState } from '../../enums/GameState';
 
-interface ISideEffectsState {
+interface IGameState {
 	score: number,
 	state: GameState
 };
 
-const initialState: ISideEffectsState = {
+const initialState: IGameState = {
 	score: 0,
 	state: GameState.INITIAL
 };

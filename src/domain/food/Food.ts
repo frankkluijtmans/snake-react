@@ -1,13 +1,15 @@
 import { FoodType } from "../../enums/FoodType";
 import { ICoordinate } from "../../interfaces/coordinate.interface";
 import { Plane } from "../Plane";
+import { store } from "../../store/store";
+import { incrementScore } from "../../store/slices/gameState";
 
 export abstract class Food {
 
 	public coordinate: ICoordinate;
+	public abstract type: FoodType;
 	protected identifier: string;
 	protected abstract value: number;
-	protected abstract type: FoodType;
 	protected abstract triggerSideEffect(): void;
 
 	constructor(coordinate: ICoordinate) {
@@ -29,7 +31,7 @@ export abstract class Food {
 
 	public eat(plane: Plane): void {
 
-		// Dispatch action to increment score
+		store.dispatch(incrementScore(this.value));
 		this.remove(plane);
 		this.triggerSideEffect();
 	}
