@@ -11,7 +11,7 @@ export default class PauseScreen extends Component {
 		return (
 			<div className="Screen">
 				<h2>Game Paused</h2>
-				<p>Press <strong>space</strong> to continue.</p>
+				<p>Press <kbd>space</kbd> to continue.</p>
 				<Instructions/>
 			</div>
 		);

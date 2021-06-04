@@ -15,11 +15,11 @@ export default class Instructions extends Component {
 					<li>Pizza - 400 points <span>(increases your speed by 0.1)</span></li>
 				</ol>
 				<ol className="List">
-					<li>Move up - W or Arrow Up</li>
-					<li>Move down - S or Arrow Down</li>
-					<li>Move left - A or Arrow Left</li>
-					<li>Move right - D or Arrow Right</li>
-					<li>Pause / Resume Game - Space Bar</li>
+					<li>Move up - <kbd>W</kbd> or <kbd>&uarr;</kbd></li>
+					<li>Move down - <kbd>S</kbd> or <kbd>&darr;</kbd></li>
+					<li>Move left - <kbd>A</kbd> or <kbd>&larr;</kbd></li>
+					<li>Move right - <kbd>D</kbd> or <kbd>&rarr;</kbd></li>
+					<li>Pause / Resume Game - <kbd>space</kbd></li>
 				</ol>
 			</div>
 		);

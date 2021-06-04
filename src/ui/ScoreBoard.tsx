@@ -33,9 +33,9 @@ export default class ScoreBoard extends Component<{}, {
     render() {
         return (
             <div className="ScoreBoard">
-                <span>Score: { this.state.score }</span>
-                <span>Speed: { this.state.speed }</span>
-                <span>Controls: { this.state.invertedControls }</span>
+                <span><strong>Score:</strong> { this.state.score }</span>
+                <span><strong>Speed:</strong> { this.state.speed }</span>
+                <span><strong>Controls</strong>: { this.state.invertedControls }</span>
             </div>
         );
     }
