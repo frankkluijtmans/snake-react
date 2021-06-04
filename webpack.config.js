@@ -3,36 +3,36 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
 module.exports = () => {
-    return {
-        entry: {
-            main: './src/main.tsx'
-        },
-        resolve: {
-            extensions: ['.ts', '.tsx', '.js']
-        },
-        output: {
-            path: path.resolve(__dirname, './dist'),
-            filename: '[name].[chunkhash].js'
-        },
-        plugins: [
-            new HtmlWebpackPlugin({
+	return {
+		entry: {
+			main: './src/main.tsx'
+		},
+		resolve: {
+			extensions: ['.ts', '.tsx', '.js']
+		},
+		output: {
+			path: path.resolve(__dirname, './dist'),
+			filename: '[name].[chunkhash].js'
+		},
+		plugins: [
+			new HtmlWebpackPlugin({
 				hash: true,
 				title: "Snake",
 				template: path.resolve(__dirname, './src/index.html'),
 				filename: path.resolve(__dirname, './index.html')
 			}),
-            new MiniCssExtractPlugin({
+			new MiniCssExtractPlugin({
 				filename: 'style.css'
 			})
-        ],
-        module: {
-            rules: [
-                {
-                    test: /\.tsx?$/,
-                    loader: 'ts-loader',
-                    exclude: /node_modules/
-                },
-                {
+		],
+		module: {
+			rules: [
+				{
+					test: /\.tsx?$/,
+					loader: 'ts-loader',
+					exclude: /node_modules/
+				},
+				{
 					test: /\.css$/,
 					use: [
 						MiniCssExtractPlugin.loader,
@@ -47,11 +47,19 @@ module.exports = () => {
 						'sass-loader'
 					],
 				},
-            ],
-        },
-        devServer: {
-            open: true,
-            writeToDisk: true
-        }
-    }
+				{
+					test: /\.(png|jpe?g|gif|svg)$/i,
+					use: [
+						{
+							loader: 'file-loader',
+						},
+					],
+				}
+			],
+		},
+		devServer: {
+			open: true,
+			writeToDisk: true
+		}
+	}
 }
