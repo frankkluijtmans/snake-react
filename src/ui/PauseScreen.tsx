@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Instructions from "./StartScreen/Instructions";
+import Instructions from "./Instructions";
 
 export default class PauseScreen extends Component {
 
