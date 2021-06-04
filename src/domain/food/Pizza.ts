@@ -2,7 +2,7 @@ import { FoodType } from "../../enums/FoodType";
 import { ICoordinate } from "../../interfaces/coordinate.interface";
 import { Food } from "./Food";
 import { store } from "../../store/store";
-import { increaseSpeed } from "../../store/slices/sideEffects";
+import { increaseSpeed } from "../../store/slices/SideEffectsSlice";
 
 export class Pizza extends Food {
 

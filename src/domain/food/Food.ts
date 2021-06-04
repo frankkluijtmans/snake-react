@@ -2,7 +2,7 @@ import { FoodType } from "../../enums/FoodType";
 import { ICoordinate } from "../../interfaces/coordinate.interface";
 import { Plane } from "../Plane";
 import { store } from "../../store/store";
-import { incrementScore } from "../../store/slices/gameState";
+import { incrementScore } from "../../store/slices/GameStateSlice";
 
 export abstract class Food {
 

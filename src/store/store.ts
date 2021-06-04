@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import gameStateReducer from './slices/GameState';
-import sideEffectReducer from './slices/SideEffects';
+import gameStateReducer from './slices/GameStateSlice';
+import sideEffectReducer from './slices/SideEffectsSlice';
 
 export const store = configureStore({
 	reducer: {

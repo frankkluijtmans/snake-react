@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { store } from "../store/store";
-import { changeGameState } from "../store/slices/GameState";
+import { changeGameState } from "../store/slices/GameStateSlice";
 import { GameState } from "../enums/GameState";
 import Instructions from "./StartScreen/Instructions";
 

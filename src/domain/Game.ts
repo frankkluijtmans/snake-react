@@ -8,8 +8,8 @@ import { Helpers } from "./Helpers";
 import { store } from "../store/store";
 import { FoodType } from "../enums/FoodType";
 import { GameState } from "../enums/GameState";
-import { resetScore, changeGameState } from "../store/slices/GameState";
-import { resetSideEffects } from "../store/slices/SideEffects";
+import { resetScore, changeGameState } from "../store/slices/GameStateSlice";
+import { resetSideEffects } from "../store/slices/SideEffectsSlice";
 
 export class Game {
 	

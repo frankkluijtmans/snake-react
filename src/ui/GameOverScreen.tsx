@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { store } from "../store/store";
 import { GameState } from "../enums/GameState";
-import { changeGameState } from "../store/slices/GameState";
+import { changeGameState } from "../store/slices/GameStateSlice";
 
 export default class GameOverScreen extends Component<{ score: number }, {}> {
 

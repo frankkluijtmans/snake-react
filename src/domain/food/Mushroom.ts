@@ -2,7 +2,7 @@ import { FoodType } from "../../enums/FoodType";
 import { ICoordinate } from "../../interfaces/coordinate.interface";
 import { Food } from "./Food";
 import { store } from "../../store/store";
-import { invertControls, revertControls } from "../../store/slices/SideEffects";
+import { invertControls, revertControls } from "../../store/slices/SideEffectsSlice";
 
 export class Mushroom extends Food {
 
