@@ -7,165 +7,215 @@ import { Input } from "./Input";
 import { Helpers } from "./Helpers";
 import { store } from "../store/store";
 import { FoodType } from "../enums/FoodType";
-import { resetScore } from "../store/slices/GameState";
+import { GameState } from "../enums/GameState";
+import { resetScore, changeGameState } from "../store/slices/GameState";
 import { resetSideEffects } from "../store/slices/SideEffects";
 
 export class Game {
-    
-    readonly FRAME_RATE: number = 6;
-    private plane: Plane;
-    private snake: Snake;
-    private input: Input;
-    private food: Food[] = [];
-    private foodFactory: FoodFactory = new FoodFactory();
-    private gameLoop: any;
+	
+	readonly FRAME_RATE: number = 6;
+	private plane: Plane;
+	private snake: Snake;
+	private input: Input;
+	private food: Food[] = [];
+	private foodFactory: FoodFactory = new FoodFactory();
+	private gameLoop: any;
+	private gameState: GameState = GameState.INITIAL;
 
-    constructor() {
-        this.plane = new Plane();
-        this.input = new Input();
-        this.snake = new Snake(this.plane, this.input);
-    }
+	constructor() {
+		this.plane = new Plane();
+		this.input = new Input();
+		this.snake = new Snake(this.plane, this.input);
+		this.subScribeToGameState();
+		this.bindInput();
+	}
 
-    get speedMultiplier(): number {
+	get speedMultiplier(): number {
 
-        return store.getState().sideEffects.speedMultiplier;
-    }
+		return store.getState().sideEffects.speedMultiplier;
+	}
 
-    public setup(): void {
+	public start(): void {
 
-        this.resetObjects();
-        this.resetState();
-        this.tick();
-    }
+		this.resetObjects();
+		this.resetState();
+		this.tick();
+	}
 
-    public tick(): void {
+	public tick(): void {
 
-        this.gameLoop = setInterval(() => {
-            this.snake.update();
+		this.gameLoop = setInterval(() => {
+			this.snake.update();
 
-            // Check if any food is eaten
-            this.checkFoodCollisions();
+			// Check if any food is eaten
+			this.checkFoodCollisions();
 
-            // Check for collision on snake itself
-            if(this.checkSnakeCollisions()) return;
+			// Check for collision on snake itself
+			if(this.checkSnakeCollisions()) return;
 
-            // Check for collision on bounds
-            if(this.checkBoundCollisions()) return;
+			// Check for collision on bounds
+			if(this.checkBoundCollisions()) return;
 
-            this.snake.draw();
-        }, 1000 / Math.round(this.FRAME_RATE * this.speedMultiplier));
-    }
+			this.snake.draw();
+		}, 1000 / Math.round(this.FRAME_RATE * this.speedMultiplier));
+	}
 
-    private resetObjects(): void {
-        
-        // Initialize plane
-        this.plane.init();
+	private subScribeToGameState(): void {
 
-        // Initialize snake
-        this.snake.init();
+		store.subscribe(() => {
 
-        // Generate n pieces of food
-        this.food = new Array(5).fill(0).map(() => {
-            return this.foodFactory.create(this.getAvailableCoordinate())
-        });
+			const newState: GameState = store.getState().gameState.state;
+			const oldState: GameState = this.gameState;
 
-        // Draw every piece of food on the plane
-        this.food.forEach((food: Food) => {
-            food.draw(this.plane);
-        });
-    }
+			if(newState !== oldState) {
 
-    private resetState(): void {
-        
-        store.dispatch(resetScore());
-        store.dispatch(resetSideEffects());
-    }
+				this.gameState = newState;
+				this.triggerStateChanges(oldState);
+			}
+		})
+	}
 
-    private resetLoop(): void {
+	private triggerStateChanges(oldState: GameState): void {
 
-        clearInterval(this.gameLoop);
-        this.tick();
-    }
+		switch(this.gameState) {
+			case GameState.PAUSED:
+				clearInterval(this.gameLoop);
+				return;
+			case GameState.ACTIVE:
+				oldState === GameState.PAUSED ? this.resetLoop() : this.start();
+				return;
+			case GameState.GAME_OVER:
+				this.food.forEach((food: Food) => food.remove(this.plane));
+				clearInterval(this.gameLoop);
+				return;
+		}
+	}
 
-    private checkCollision(baseCoordinate: ICoordinate, coordinatesToCheck: ICoordinate[]): boolean {
+	private resetObjects(): void {
+		
+		// Initialize plane
+		if(!this.plane.grid) this.plane.init();
 
-        return coordinatesToCheck.some((coordinate: ICoordinate) => {
-            return coordinate.x === baseCoordinate.x && coordinate.y === baseCoordinate.y;
-        });
-    }
+		// Initialize snake
+		this.snake.init();
 
-    private checkBounds(coordinate: ICoordinate): boolean {
-        
-        if(coordinate.x < 0 
-            || coordinate.x > (this.plane.gridSize.width - 1)
-            || coordinate.y < 0
-            || coordinate.y > (this.plane.gridSize.height - 1)) {
-            return true;
-        }
+		// Generate n pieces of food
+		this.food = new Array(5).fill(0).map(() => {
+			return this.foodFactory.create(this.getAvailableCoordinate())
+		});
 
-        return false;
-    }
+		// Draw every piece of food on the plane
+		this.food.forEach((food: Food) => {
+			food.draw(this.plane);
+		});
+	}
 
-    private getAvailableCoordinate(): ICoordinate {
+	private resetState(): void {
+		
+		store.dispatch(resetScore());
+		store.dispatch(resetSideEffects());
+	}
 
-        const occupiedCoordinates: ICoordinate[] = this.food.map((food: Food) => food.coordinate).concat(this.snake.coordinates);
-        let generatedCoordinate: ICoordinate = {
-            x: Helpers.generateRandomNumber(0, this.plane.gridSize.width - 1),
-            y: Helpers.generateRandomNumber(0, this.plane.gridSize.height - 1)
-        }
+	private resetLoop(): void {
 
-        while(this.checkCollision(generatedCoordinate, occupiedCoordinates)) {
-            generatedCoordinate = {
-                x: Helpers.generateRandomNumber(0, this.plane.gridSize.width - 1),
-                y: Helpers.generateRandomNumber(0, this.plane.gridSize.height - 1)
-            }
-        }
+		clearInterval(this.gameLoop);
+		this.tick();
+	}
 
-        return generatedCoordinate;
-    }
+	private checkCollision(baseCoordinate: ICoordinate, coordinatesToCheck: ICoordinate[]): boolean {
 
-    private checkFoodCollisions(): void {
+		return coordinatesToCheck.some((coordinate: ICoordinate) => {
+			return coordinate.x === baseCoordinate.x && coordinate.y === baseCoordinate.y;
+		});
+	}
 
-        this.food.forEach((food: Food, index) => {
+	private checkBounds(coordinate: ICoordinate): boolean {
+		
+		if(coordinate.x < 0 
+			|| coordinate.x > (this.plane.gridSize.width - 1)
+			|| coordinate.y < 0
+			|| coordinate.y > (this.plane.gridSize.height - 1)) {
+			return true;
+		}
 
-            if(this.checkCollision(
-                this.snake.coordinates[this.snake.coordinates.length - 1],
-                [food.coordinate]
-            )) {
-                food.eat(this.plane);
-                if(food.type === FoodType.PIZZA) this.resetLoop();
-                this.food.splice(index, 1);
-                this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
-                this.food[this.food.length - 1].draw(this.plane);
-                this.snake.grow();
-            }
-        })
-    }
+		return false;
+	}
 
-    private checkSnakeCollisions(): boolean {
+	private getAvailableCoordinate(): ICoordinate {
 
-        if(this.checkCollision(
-            this.snake.coordinates[this.snake.coordinates.length - 1],
-            this.snake.coordinates.slice(0, this.snake.coordinates.length - 1)
-        )) {
-            clearInterval(this.gameLoop);
-            // Dispatch action to change gamestate
-            return true;
-        }
+		const occupiedCoordinates: ICoordinate[] = this.food.map((food: Food) => food.coordinate).concat(this.snake.coordinates);
+		let generatedCoordinate: ICoordinate = {
+			x: Helpers.generateRandomNumber(0, this.plane.gridSize.width - 1),
+			y: Helpers.generateRandomNumber(0, this.plane.gridSize.height - 1)
+		}
 
-        return false;
-    }
+		while(this.checkCollision(generatedCoordinate, occupiedCoordinates)) {
+			generatedCoordinate = {
+				x: Helpers.generateRandomNumber(0, this.plane.gridSize.width - 1),
+				y: Helpers.generateRandomNumber(0, this.plane.gridSize.height - 1)
+			}
+		}
 
-    private checkBoundCollisions(): boolean {
+		return generatedCoordinate;
+	}
 
-        if(this.checkBounds(
-            this.snake.coordinates[this.snake.coordinates.length - 1]
-        )) {
-            clearInterval(this.gameLoop);
-            // Dispatch action to change gamestate
-            return true;
-        }
+	private checkFoodCollisions(): void {
 
-        return false;
-    }
+		this.food.forEach((food: Food, index) => {
+
+			if(this.checkCollision(
+				this.snake.coordinates[this.snake.coordinates.length - 1],
+				[food.coordinate]
+			)) {
+				food.eat(this.plane);
+				if(food.type === FoodType.PIZZA) this.resetLoop();
+				this.food.splice(index, 1);
+				this.food.push(this.foodFactory.create(this.getAvailableCoordinate()));
+				this.food[this.food.length - 1].draw(this.plane);
+				this.snake.grow();
+			}
+		})
+	}
+
+	private checkSnakeCollisions(): boolean {
+
+		if(this.checkCollision(
+			this.snake.coordinates[this.snake.coordinates.length - 1],
+			this.snake.coordinates.slice(0, this.snake.coordinates.length - 1)
+		)) {
+			clearInterval(this.gameLoop);
+			store.dispatch(changeGameState(GameState.GAME_OVER));
+			return true;
+		}
+
+		return false;
+	}
+
+	private checkBoundCollisions(): boolean {
+
+		if(this.checkBounds(
+			this.snake.coordinates[this.snake.coordinates.length - 1]
+		)) {
+			clearInterval(this.gameLoop);
+			store.dispatch(changeGameState(GameState.GAME_OVER));
+			return true;
+		}
+
+		return false;
+	}
+
+	private bindInput(): void {
+
+		this.input.subscribe({
+			keyCodes: ['Space'],
+			callback: () => {
+
+				if(this.gameState !== GameState.ACTIVE && this.gameState !== GameState.PAUSED) return;
+
+				store.dispatch(
+					this.gameState === GameState.ACTIVE ? changeGameState(GameState.PAUSED) : changeGameState(GameState.ACTIVE)
+				)
+			}
+		});
+	}
 }

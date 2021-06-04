@@ -36,7 +36,7 @@ export abstract class Food {
 		this.triggerSideEffect();
 	}
 
-	private remove(plane: Plane): void {
+	public remove(plane: Plane): void {
 
 		plane.grid
 			.selectAll("rect[identifier='"+ this.identifier +"']")
