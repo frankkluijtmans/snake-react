@@ -8,9 +8,10 @@ export class FoodFactory {
 
     create(coordinate: ICoordinate) {
 
-        const randomizedNumber: number = Helpers.generateRandomNumber(1, 3)
+        const itemPool: number[] = [1, 1, 1, 1, 1, 1, 2, 2, 3, 3];
+        const randomizedNumber: number = Helpers.generateRandomNumber(0, itemPool.length - 1);
 
-        switch(randomizedNumber) {
+        switch(itemPool[randomizedNumber]) {
             case 1:
                 return new Cherry(coordinate);
             case 2:
