@@ -1,9 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-interface ISideEffectsState {
-	speedMultiplier: number,
-	invertedControls: boolean
-};
+import { ISideEffectsState } from '../../interfaces/state.interface';
 
 const initialState: ISideEffectsState = {
 	speedMultiplier: 1,

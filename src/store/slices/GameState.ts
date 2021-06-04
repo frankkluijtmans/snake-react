@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IGameState } from '../../interfaces/state.interface';
 import { GameState } from '../../enums/GameState';
-
-interface IGameState {
-	score: number,
-	state: GameState
-};
 
 const initialState: IGameState = {
 	score: 0,
