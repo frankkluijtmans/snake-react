@@ -1,4 +1,8 @@
 import * as d3 from "d3";
+import { GameState } from "../enums/GameState";
+import { ICoordinate } from "../interfaces/coordinate.interface";
+import { changeGameState, clearGameLoop } from "../store/slices/GameStateSlice";
+import { store } from "../store/store";
 
 export class Plane {
 
@@ -16,7 +20,31 @@ export class Plane {
             .attr('width', this.gridSize.width * this.CELL_SIZE)
             .attr('height', this.gridSize.height * this.CELL_SIZE);
 
-		// Render grid lines along the x axis
+		this.renderGrid();
+	}
+
+	public checkCollision(coordinate: ICoordinate): boolean {
+
+		if(coordinate.x < 0 
+			|| coordinate.x > (this.gridSize.width - 1)
+			|| coordinate.y < 0
+			|| coordinate.y > (this.gridSize.height - 1)) {
+			
+			this.onCollision();
+			return true;
+		}
+
+		return false;
+	}
+
+	private onCollision(): void {
+
+		store.dispatch(clearGameLoop());
+		store.dispatch(changeGameState(GameState.GAME_OVER));
+	}
+
+	private renderGrid(): void {
+
 		for(let i = 1; i < this.gridSize.width; i++) {
 			this.grid
 				.append('rect')
@@ -27,7 +55,6 @@ export class Plane {
 				.attr('y', 0);
 		}
 
-		// Render grid lines along the y axis
 		for(let i = 1; i < this.gridSize.height; i++) {
 			this.grid
 				.append('rect')

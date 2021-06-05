@@ -18,7 +18,5 @@ export class Pizza extends Food {
 	public triggerSideEffect(): void {
 
 		store.dispatch(increaseSpeed());
-
-		return;
 	}
 }

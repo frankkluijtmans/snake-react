@@ -4,7 +4,8 @@ import { GameState } from '../../enums/GameState';
 
 const initialState: IGameState = {
 	score: 0,
-	state: GameState.INITIAL
+	state: GameState.INITIAL,
+	gameLoop: null
 };
 
 export const gameStateSlice = createSlice({
@@ -19,9 +20,16 @@ export const gameStateSlice = createSlice({
 		},
 		resetScore: state => {
 			state.score = 0;
+		},
+		setGameLoop: (state, action: PayloadAction<any>) => {
+			state.gameLoop = action.payload;
+		},
+		clearGameLoop: state => {
+			clearInterval(state.gameLoop);
+			state.gameLoop = null;
 		}
 	}
 });
 
-export const { incrementScore, changeGameState, resetScore } = gameStateSlice.actions;
+export const { incrementScore, changeGameState, resetScore, setGameLoop, clearGameLoop } = gameStateSlice.actions;
 export default gameStateSlice.reducer;

@@ -19,6 +19,6 @@ export class Mushroom extends Food {
 
 		store.dispatch(invertControls(setTimeout(() => {
 			store.dispatch(revertControls());
-		}, 10000)));
+		}, 30000)));
 	}
 }

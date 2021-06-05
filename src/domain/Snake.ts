@@ -3,6 +3,9 @@ import { ICoordinate } from "../interfaces/coordinate.interface";
 import { Plane } from "./Plane";
 import { Input } from "./Input";
 import { store } from "../store/store";
+import { Helpers } from "./Helpers";
+import { changeGameState, clearGameLoop } from "../store/slices/GameStateSlice";
+import { GameState } from "../enums/GameState";
 
 export class Snake {
 
@@ -46,7 +49,7 @@ export class Snake {
 	public draw(): void {
 
 		this.plane.grid.selectAll('rect.SnakePart').remove();
-            
+
         this.plane.grid.selectAll('rect.SnakePart')
             .data(this.coordinates)
             .enter()
@@ -62,6 +65,25 @@ export class Snake {
 	public grow(): void {
 
 		this.coordinates.unshift(this.coordinates[0]);
+	}
+
+	public checkCollision(): boolean {
+
+		if(Helpers.checkCollision(
+			this.coordinates[this.coordinates.length - 1],
+			this.coordinates.slice(0, this.coordinates.length - 1)
+		)) {
+			this.onCollision();
+			return true;
+		}
+
+		return false;
+	}
+
+	private onCollision(): void {
+
+		store.dispatch(clearGameLoop());
+		store.dispatch(changeGameState(GameState.GAME_OVER));
 	}
 
 	private bindInput(): void {

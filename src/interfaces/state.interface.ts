@@ -8,7 +8,8 @@ interface ISideEffectsState {
 
 interface IGameState {
 	score: number,
-	state: GameState
+	state: GameState,
+	gameLoop: any
 };
 
 export {
