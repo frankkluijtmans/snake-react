@@ -35,7 +35,7 @@ export class Game {
 
 	public init(): void {
 
-		this.subScribeToGameState();
+		this.subscribeToGameState();
 		this.bindInput();
 	}
 
@@ -49,23 +49,28 @@ export class Game {
 	public tick(): void {
 
 		const gameLoop: any = setInterval(() => {
-			this.snake.update();
-
-			this.checkFoodCollisions();
-			if(this.snake.checkCollision()) return;
-			if(this.plane.checkCollision(
-				this.snake.coordinates[this.snake.coordinates.length - 1]
-			)) {
-				return;
-			}
-
-			this.snake.draw();
+			this.updateFrame();
 		}, 1000 / this.frameRate);
 
 		store.dispatch(setGameLoop(gameLoop));
 	}
 
-	private subScribeToGameState(): void {
+	private updateFrame(): void {
+		
+		this.snake.update();
+
+		this.checkFoodCollisions();
+		if(this.snake.checkCollision()) return;
+		if(this.plane.checkCollision(
+			this.snake.coordinates[this.snake.coordinates.length - 1]
+		)) {
+			return;
+		}
+
+		this.snake.draw();
+	}
+
+	private subscribeToGameState(): void {
 
 		store.subscribe(() => {
 
