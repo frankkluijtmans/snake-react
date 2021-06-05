@@ -2,7 +2,8 @@ import { GameState } from "../enums/GameState";
 
 interface ISideEffectsState {
 	speedMultiplier: number,
-	invertedControls: boolean
+	invertedControls: boolean,
+	invertedControlsTimer: any
 };
 
 interface IGameState {

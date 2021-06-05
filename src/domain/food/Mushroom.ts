@@ -10,7 +10,6 @@ export class Mushroom extends Food {
 	public value: number = 350;
 	public image: string = MushroomImage;
 	public type: FoodType = FoodType.MUSHROOM;
-	private timeOut;
 
 	constructor(coordinate: ICoordinate) {
 		super(coordinate);
@@ -18,13 +17,8 @@ export class Mushroom extends Food {
 
 	public triggerSideEffect(): void {
 
-		clearInterval(this.timeOut);
-		store.dispatch(invertControls());
-
-		this.timeOut = setInterval(() => {
+		store.dispatch(invertControls(setTimeout(() => {
 			store.dispatch(revertControls());
-		}, 30000);
-
-		return;
+		}, 10000)));
 	}
 }

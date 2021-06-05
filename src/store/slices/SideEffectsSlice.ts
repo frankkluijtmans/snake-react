@@ -1,17 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ISideEffectsState } from '../../interfaces/state.interface';
 
 const initialState: ISideEffectsState = {
 	speedMultiplier: 1,
-	invertedControls: false
+	invertedControls: false,
+	invertedControlsTimer: null
 };
 
 export const sideEffectSlice = createSlice({
 	name: 'sideEffects',
 	initialState,
 	reducers: {
-		invertControls: state => {
+		invertControls: (state, action: PayloadAction<any>) => {
+			clearTimeout(state.invertedControlsTimer);
 			state.invertedControls = true;
+			state.invertedControlsTimer = action.payload;
 		},
 		revertControls: state => {
 			state.invertedControls = false;
