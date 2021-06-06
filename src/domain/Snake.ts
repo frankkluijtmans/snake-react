@@ -13,6 +13,7 @@ export class Snake {
 	private direction: Direction = Direction.RIGHT;
 	private plane: Plane;
 	private input: Input;
+	private store = store;
 
 	constructor(plane: Plane, input: Input) {
 		this.plane = plane;
@@ -22,7 +23,7 @@ export class Snake {
 
 	get invertedControls(): boolean {
 
-		return store.getState().sideEffects.invertedControls;
+		return this.store.getState().sideEffects.invertedControls;
 	}
 
 	public init(): void {
@@ -82,8 +83,8 @@ export class Snake {
 
 	private onCollision(): void {
 
-		store.dispatch(clearGameLoop());
-		store.dispatch(changeGameState(GameState.GAME_OVER));
+		this.store.dispatch(clearGameLoop());
+		this.store.dispatch(changeGameState(GameState.GAME_OVER));
 	}
 
 	private bindInput(): void {
