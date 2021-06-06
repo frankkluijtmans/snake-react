@@ -8,6 +8,7 @@ import * as d3 from "d3";
 export abstract class Food {
 
 	public coordinate: ICoordinate;
+	public store = store;
 	public abstract type: FoodType;
 	protected identifier: string;
 	protected abstract image: string;
@@ -35,7 +36,7 @@ export abstract class Food {
 
 	public eat(plane: Plane): void {
 
-		store.dispatch(incrementScore(this.value));
+		this.store.dispatch(incrementScore(this.value));
 		this.remove(plane);
 		this.triggerSideEffect();
 	}

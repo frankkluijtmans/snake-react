@@ -1,7 +1,6 @@
 import { FoodType } from "../../enums/FoodType";
 import { ICoordinate } from "../../interfaces/coordinate.interface";
 import { Food } from "./Food";
-import { store } from "../../store/store";
 import { invertControls, revertControls } from "../../store/slices/SideEffectsSlice";
 import MushroomImage from "../../assets/mushroom.svg";
 
@@ -17,8 +16,8 @@ export class Mushroom extends Food {
 
 	public triggerSideEffect(): void {
 
-		store.dispatch(invertControls(setTimeout(() => {
-			store.dispatch(revertControls());
+		this.store.dispatch(invertControls(setTimeout(() => {
+			this.store.dispatch(revertControls());
 		}, 30000)));
 	}
 }
