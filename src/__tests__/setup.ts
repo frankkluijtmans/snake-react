@@ -22,3 +22,7 @@ global["mockSvgElement"] = d3.select("body").
 	append("svg")
 	.attr("width", 64)
 	.attr("height", 64);
+
+global["mockD3"] = {
+	select: jest.fn(() => global["mockSvgElement"])
+}

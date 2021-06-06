@@ -12,10 +12,12 @@ export class Plane {
 		width: Math.floor(1024 / this.CELL_SIZE),
 		height: Math.floor(768 / this.CELL_SIZE)
 	};
+	private store = store;
+	private d3 = d3;
 
 	public init(): void {
 
-		this.grid = d3.select('#plane')
+		this.grid = this.d3.select('#plane')
             .append('svg')
             .attr('width', this.gridSize.width * this.CELL_SIZE)
             .attr('height', this.gridSize.height * this.CELL_SIZE);
@@ -39,8 +41,8 @@ export class Plane {
 
 	private onCollision(): void {
 
-		store.dispatch(clearGameLoop());
-		store.dispatch(changeGameState(GameState.GAME_OVER));
+		this.store.dispatch(clearGameLoop());
+		this.store.dispatch(changeGameState(GameState.GAME_OVER));
 	}
 
 	private renderGrid(): void {
