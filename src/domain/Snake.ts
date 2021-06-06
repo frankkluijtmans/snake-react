@@ -56,6 +56,7 @@ export class Snake {
             .enter()
             .append('rect')
 			.attr('class', 'SnakePart')
+			.attr('fill', this.invertedControls ? '#70D0FF' : '#EC1395')
             .attr('width', this.plane.CELL_SIZE)
             .attr('height', this.plane.CELL_SIZE)
             .attr('x', (point) => { return point.x * this.plane.CELL_SIZE })

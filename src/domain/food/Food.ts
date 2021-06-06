@@ -24,14 +24,22 @@ export abstract class Food {
 
 		const image = await d3.xml(this.image);
 		
-		image.documentElement.setAttribute('width', plane.CELL_SIZE + "px");
-		image.documentElement.setAttribute('height', plane.CELL_SIZE  + "px");
+		image.documentElement.setAttribute('width', "0px");
+		image.documentElement.setAttribute('height', "0px");
 		image.documentElement.setAttribute('x', this.coordinate.x * plane.CELL_SIZE + "px");
 		image.documentElement.setAttribute('y', this.coordinate.y * plane.CELL_SIZE + "px");
 		image.documentElement.setAttribute('identifier', this.identifier);
+		image.documentElement.classList.add('FoodItem');
 
 		plane.grid.node()
 			.append(image.documentElement);
+
+		plane.grid
+			.select("[identifier='"+ this.identifier +"']")
+			.transition()
+			.duration(300)
+			.attr("width", plane.CELL_SIZE + "px")
+			.attr("height", plane.CELL_SIZE + "px");
 	}
 
 	public eat(plane: Plane): void {
@@ -44,7 +52,7 @@ export abstract class Food {
 	public remove(plane: Plane): void {
 
 		plane.grid
-			.selectAll("[identifier='"+ this.identifier +"']")
+			.select("[identifier='"+ this.identifier +"']")
 			.remove();
 	}
 

@@ -9,8 +9,8 @@ export class Plane {
 	readonly CELL_SIZE: number = 32;
 	public grid: any;
 	public gridSize: { width: number, height: number } = {
-		width: Math.floor(1024 / this.CELL_SIZE),
-		height: Math.floor(768 / this.CELL_SIZE)
+		width: Math.floor(window.innerWidth / this.CELL_SIZE),
+		height: Math.floor((window.innerHeight - 60) / this.CELL_SIZE)
 	};
 	private store = store;
 	private d3 = d3;

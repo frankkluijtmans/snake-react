@@ -35,7 +35,11 @@ export default class ScoreBoard extends Component<{}, {
             <div className="ScoreBoard">
                 <span><strong>Score:</strong> { this.state.score }</span>
                 <span><strong>Speed:</strong> { this.state.speed }</span>
-                <span><strong>Controls</strong>: { this.state.invertedControls }</span>
+                <span
+                    className={ this.state.invertedControls }
+                >
+                    <strong>Controls</strong>: { this.state.invertedControls }
+                </span>
             </div>
         );
     }
