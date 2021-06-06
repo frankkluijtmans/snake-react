@@ -128,10 +128,6 @@ body {
     width: 100vw;
     height: 100vh;
 
-    .SnakePart {
-        fill: $pink;
-    }
-
     .GridLine {
         fill: $navy;
     }
@@ -152,5 +148,24 @@ body {
         color: $pink;
         text-shadow: $blue 1px 1px 0;
         font-size: 24px;
+        transition: color 0.3s;
+
+        &.Inverted {
+            color: $blue;
+            text-shadow: $pink 1px 1px 0;
+            animation: pulse 1s normal;
+        }
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
     }
 }
