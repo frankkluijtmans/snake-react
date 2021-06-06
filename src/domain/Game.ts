@@ -20,6 +20,7 @@ export class Game {
 	private food: Food[] = [];
 	private foodFactory: FoodFactory = new FoodFactory();
 	private gameState: GameState = GameState.INITIAL;
+	private store = store;
 
 	constructor() {
 		this.plane = new Plane();
@@ -30,7 +31,7 @@ export class Game {
 
 	get frameRate(): number {
 
-		return Math.round(store.getState().sideEffects.speedMultiplier * this.FRAME_RATE);
+		return Math.round(this.store.getState().sideEffects.speedMultiplier * this.FRAME_RATE);
 	}
 
 	public init(): void {
@@ -52,7 +53,7 @@ export class Game {
 			this.updateFrame();
 		}, 1000 / this.frameRate);
 
-		store.dispatch(setGameLoop(gameLoop));
+		this.store.dispatch(setGameLoop(gameLoop));
 	}
 
 	private updateFrame(): void {
@@ -72,9 +73,9 @@ export class Game {
 
 	private subscribeToGameState(): void {
 
-		store.subscribe(() => {
+		this.store.subscribe(() => {
 
-			const newState: GameState = store.getState().gameState.state;
+			const newState: GameState = this.store.getState().gameState.state;
 			const oldState: GameState = this.gameState;
 
 			if(newState !== oldState) {
@@ -89,14 +90,14 @@ export class Game {
 
 		switch(this.gameState) {
 			case GameState.PAUSED:
-				store.dispatch(clearGameLoop());
+				this.store.dispatch(clearGameLoop());
 				return;
 			case GameState.ACTIVE:
 				oldState === GameState.PAUSED ? this.resetLoop() : this.start();
 				return;
 			case GameState.GAME_OVER:
 				this.food.forEach((food: Food) => food.remove(this.plane));
-				store.dispatch(clearGameLoop());
+				this.store.dispatch(clearGameLoop());
 				return;
 		}
 	}
@@ -118,13 +119,13 @@ export class Game {
 
 	private resetState(): void {
 		
-		store.dispatch(resetScore());
-		store.dispatch(resetSideEffects());
+		this.store.dispatch(resetScore());
+		this.store.dispatch(resetSideEffects());
 	}
 
 	private resetLoop(): void {
 
-		store.dispatch(clearGameLoop());
+		this.store.dispatch(clearGameLoop());
 		this.tick();
 	}
 
@@ -185,7 +186,7 @@ export class Game {
 
 		if(this.gameState !== GameState.ACTIVE && this.gameState !== GameState.PAUSED) return;
 
-		store.dispatch(
+		this.store.dispatch(
 			this.gameState === GameState.ACTIVE ? changeGameState(GameState.PAUSED) : changeGameState(GameState.ACTIVE)
 		)
 	}
