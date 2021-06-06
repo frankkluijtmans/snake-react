@@ -21,17 +21,16 @@ body {
 }
 
 .Screen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed;
+    top: 0;
+    left: 0;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 1024px;
-    height: 768px;
+    width: 100vw;
+    height: 100vh;
     background: rgba($dark-navy, 0.8);
 
     color: $pink;
@@ -123,9 +122,11 @@ body {
 }
 
 #plane {
-    width: 1024px;
-    height: 768px;
-    border: 2px solid $navy;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100vw;
+    height: 100vh;
 
     .SnakePart {
         fill: $pink;
@@ -138,11 +139,14 @@ body {
 
 .ScoreBoard {
     position: fixed;
-    top: 20px;
+    top: 0;
     display: flex;
     flex-direction: row;
-    width: 1024px;
+    width: 100%;
+    height: 60px;
     justify-content: space-evenly;
+    align-items: center;
+    background: $navy;
 
     span {
         color: $pink;
